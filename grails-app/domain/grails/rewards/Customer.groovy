@@ -13,7 +13,7 @@ class Customer {
         phone()
         firstName(nullable: true)
         lastName(nullable: true)
-        email(nullable: true)
-        totalPoints(nullable: true)
+        email(nullable: true, email: true)
+        totalPoints(nullable: true, max: 10)
     }
 }
