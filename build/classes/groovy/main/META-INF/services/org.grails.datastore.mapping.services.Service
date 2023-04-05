@@ -1,0 +1,5 @@
+grails.rewards.$AwardServiceImplementation
+grails.rewards.$CustomerOrderServiceImplementation
+grails.rewards.$CustomerServiceImplementation
+grails.rewards.$OrderItemServiceImplementation
+grails.rewards.$ProductServiceImplementation
