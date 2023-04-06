@@ -21,7 +21,7 @@
 </div>
 
 <div id="create-feedbackForm" class="content scaffold-create" role="main">
-    <h1></h1>
+    <h1>Feedback Form</h1>
     <g:form action="index">
         <fieldset class="form">
             <g:render template="form"/>

@@ -1,21 +1,58 @@
 package grails.rewards
 
 import grails.validation.ValidationException
+
 import static org.springframework.http.HttpStatus.*
 
 class CustomerController {
-
+    def calculationsService
     CustomerService customerService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond customerService.list(params), model:[customerCount: customerService.count()]
+        respond customerService.list(params), model: [customerCount: customerService.count()]
+    }
+
+    def lookup() {
+        def customerInstance = Customer.list(sort: "lastName", order: "desc", max: 5, offset: 5)
+        [customerInstanceList: customerInstance]
+    }
+
+    def customerLookup(Customer lookupInstance) {
+
+        def (customerInstance, welcomeMessage) = calculationsService.processCheckin(lookupInstance)
+
+        render(view: "checkin", model: [customerInstance: customerInstance, welcomeMessage: welcomeMessage])
+        // Query customer by phone #
+        // If no result,
+        // Create a new customer
+        // Create a Welcome Message
+        // Add award record
+        // save customer
+        // send welcome to kiosk
+        //if customer found,
+        // Calculate total points
+        // Create a Welcome Message
+        // Add award record
+        // save customer
+        // send welcome to kiosk
+    }
+
+//   def lookup() {
+    //    def customerInstance = Customer.findAllByLastName("tecas")
+    //     [customerInstanceList: customerInstance]
+    //   }
+
+    def checkin() {
+
     }
 
     def show(Long id) {
+
         respond customerService.get(id)
+
     }
 
     def create() {
@@ -31,7 +68,7 @@ class CustomerController {
         try {
             customerService.save(customer)
         } catch (ValidationException e) {
-            respond customer.errors, view:'create'
+            respond customer.errors, view: 'create'
             return
         }
 
@@ -57,7 +94,7 @@ class CustomerController {
         try {
             customerService.save(customer)
         } catch (ValidationException e) {
-            respond customer.errors, view:'edit'
+            respond customer.errors, view: 'edit'
             return
         }
 
@@ -66,7 +103,7 @@ class CustomerController {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'customer.label', default: 'Customer'), customer.id])
                 redirect customer
             }
-            '*'{ respond customer, [status: OK] }
+            '*' { respond customer, [status: OK] }
         }
     }
 
@@ -81,9 +118,9 @@ class CustomerController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'customer.label', default: 'Customer'), id])
-                redirect action:"index", method:"GET"
+                redirect action: "index", method: "GET"
             }
-            '*'{ render status: NO_CONTENT }
+            '*' { render status: NO_CONTENT }
         }
     }
 
@@ -93,7 +130,7 @@ class CustomerController {
                 flash.message = message(code: 'default.not.found.message', args: [message(code: 'customer.label', default: 'Customer'), params.id])
                 redirect action: "index", method: "GET"
             }
-            '*'{ render status: NOT_FOUND }
+            '*' { render status: NOT_FOUND }
         }
     }
 }
